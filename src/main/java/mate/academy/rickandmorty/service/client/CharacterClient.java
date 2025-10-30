@@ -12,7 +12,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.rickandmorty.dto.CharacterDto;
 import mate.academy.rickandmorty.mapper.CharacterMapper;
-import mate.academy.rickandmorty.model.Character;
 import mate.academy.rickandmorty.repository.CharacterRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -30,9 +29,10 @@ public class CharacterClient implements ApplicationRunner {
         List<CharacterDto> result = new ArrayList<>();
 
         try {
-            while (url != null) {
-                HttpClient httpClient = HttpClient.newHttpClient();
+            HttpClient httpClient = HttpClient.newHttpClient();
+            ObjectMapper mapper = new ObjectMapper();
 
+            while (url != null) {
                 HttpRequest request = HttpRequest.newBuilder()
                         .GET()
                         .uri(URI.create(url))
@@ -40,16 +40,12 @@ public class CharacterClient implements ApplicationRunner {
 
                 HttpResponse<String> response = httpClient.send(request,
                         HttpResponse.BodyHandlers.ofString());
-                ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(response.body());
                 JsonNode resultsNode = root.get("results");
 
                 if (resultsNode != null && resultsNode.isArray()) {
                     for (JsonNode node : resultsNode) {
                         CharacterDto dto = new CharacterDto();
-                        if (node.has("id")) {
-                            dto.setId(node.get("id").asLong());
-                        }
                         if (node.has("id")) {
                             dto.setExternalId(node.get("id").asLong());
                         }
@@ -81,9 +77,9 @@ public class CharacterClient implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        List<Character> characterList = importCharacters().stream()
+        importCharacters().stream()
                 .map(characterMapper::toEntity)
-                .toList();
-        characterRepository.saveAll(characterList);
+                .filter(c -> !characterRepository.existsById(c.getExternalId()))
+                .forEach(characterRepository::save);
     }
 }
