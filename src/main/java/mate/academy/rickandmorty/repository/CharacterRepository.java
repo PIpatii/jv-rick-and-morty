@@ -12,4 +12,6 @@ public interface CharacterRepository extends JpaRepository<Character,Long> {
     Character getRandomCharacter();
 
     List<Character> findAllByNameContainingIgnoreCase(String name);
+
+    Boolean existsByExternalId(Long externalId);
 }

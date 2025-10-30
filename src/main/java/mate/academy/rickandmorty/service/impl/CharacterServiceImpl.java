@@ -17,6 +17,9 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public CharacterDto getRandomCharacter() {
+        if (characterRepository.count() == 0) {
+            throw new IllegalStateException("No character found");
+        }
         return characterMapper.toDto(characterRepository.getRandomCharacter());
     }
 

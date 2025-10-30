@@ -79,7 +79,7 @@ public class CharacterClient implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         importCharacters().stream()
                 .map(characterMapper::toEntity)
-                .filter(c -> !characterRepository.existsById(c.getExternalId()))
+                .filter(c -> !characterRepository.existsByExternalId(c.getExternalId()))
                 .forEach(characterRepository::save);
     }
 }
