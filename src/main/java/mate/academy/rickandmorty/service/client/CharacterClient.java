@@ -45,20 +45,7 @@ public class CharacterClient implements ApplicationRunner {
 
                 if (resultsNode != null && resultsNode.isArray()) {
                     for (JsonNode node : resultsNode) {
-                        CharacterDto dto = new CharacterDto();
-                        if (node.has("id")) {
-                            dto.setExternalId(node.get("id").asLong());
-                        }
-                        if (node.has("name")) {
-                            dto.setName(node.get("name").asText());
-                        }
-                        if (node.has("status")) {
-                            dto.setStatus(node.get("status").asText());
-                        }
-                        if (node.has("gender")) {
-                            dto.setGender(node.get("gender").asText());
-                        }
-                        result.add(dto);
+                        result.add(characterMapper.jsonToDto(node));
                     }
                 }
 

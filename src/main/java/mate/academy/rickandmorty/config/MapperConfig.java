@@ -10,7 +10,4 @@ import org.mapstruct.NullValueCheckStrategy;
         implementationPackage = "mate.academy.rickandmorty.mapper.impl"
 )
 public class MapperConfig {
-
 }
-
-
